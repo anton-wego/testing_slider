@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="lightslider.min.css" />                  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="lightslider.min.js"></script>
+     <script type="text/javascript" src="review_data.json"></script>
+                            
+    <style>
+      .carouselContianer{
+        width: 800px;
+        margin: 100px auto;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="carouselContianer">
+      <p>Preview Items New</p>
+      <ul id="lightSliderNew">
+        <li data-thumb="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677610.jpg" data-src="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677610.jpg">
+          <img src="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677610.jpg" />
+        </li>
+        <li data-thumb="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677608.jpg" data-src="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677608.jpg">
+          <img src="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677608.jpg" />
+        </li>
+      </ul>
+      <br />
+      <p>Preview Items Old</p>
+      <ul id="lightSliderOld">
+        <li data-thumb="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677610.jpg" data-src="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677610.jpg">
+          <img src="https://zen.wego.com/cdn-cgi/image/format=auto,height=504,quality=90/hotelz/s/23295864/611677610.jpg" />
+        </li>
+      </ul>
+      <div style="text-align: center; margin-top: 40px;">
+        <button id="prevBtn" class="PrevBtn">Prev</button>
+        <button id="nextBtn" class="NextBtn">Next</button>
+      </div>
+    </div>
+    <script type="text/javascript">
+      
+      const objNames = data
+      var allHotelIds = Object.keys(objNames)
+      var hotelIdCurr = allHotelIds[0]
+
+      function resetImages(){
+        var n = $("#lightSliderNew").lightSlider()
+        var o = $("#lightSliderOld").lightSlider()
+        n.destroy();
+        o.destroy();
+        $('#lightSliderNew, #lightSliderOld').empty()
+        $('.lSPager').empty()
+      }
+
+      function loadImages(objImages) {
+        resetImages();
+        objImages.new.map((url) => {
+          $('#lightSliderNew').append("<li data-thumb="+url+" data-src="+url+"><img src="+url+" /></li>")
+        })
+        objImages.old.map((url) => {
+          $('#lightSliderOld').append("<li data-thumb="+url+" data-src="+url+"><img src="+url+" /></li>")
+        })
+        setPrevNextBtn();
+        $('#lightSliderNew, #lightSliderOld').lightSlider({
+          gallery:true,
+          item:1,
+          loop:true,
+          thumbItem:9,
+          slideMargin:0,
+          enableDrag: false,
+          currentPagerPosition:'left',
+          onSliderLoad: function(el) {
+          }   
+        }); 
+      }
+
+      function setPrevNextBtn(){
+        var index = allHotelIds.indexOf(hotelIdCurr)
+        var nextHotelId = allHotelIds[index+1]
+        var prevHotelId = allHotelIds[index-1]
+
+
+        $("#prevBtn").off('click')
+        $("#prevBtn").on('click', function(){
+          hotelIdCurr = prevHotelId
+          loadImages(objNames[prevHotelId]);
+        })
+
+        $("#nextBtn").off('click')
+        $("#nextBtn").on('click', function(){
+          hotelIdCurr = nextHotelId
+          loadImages(objNames[nextHotelId]);
+        })
+
+        if (typeof(prevHotelId) === 'undefined'){
+          $("#prevBtn").off('click')
+        }
+        if (typeof(nextHotelId) === 'undefined'){
+          $("#nextBtn").off('click')
+        }
+
+      }
+
+      $(document).ready(function() {
+        loadImages(objNames[hotelIdCurr])
+      });
+    </script>      
+  </body>
+</html>
